@@ -12,7 +12,7 @@
 """
 
 import numpy as np
-data = [1,2,3,4,5] #list
+data = [1,2,3,4,5] # list
 
 arr = np.array(data) # создание из обычного list
 
