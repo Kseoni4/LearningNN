@@ -27,22 +27,20 @@ class GoToTheUnickNetwork(object):
     def __init__(self, learning_rate=0.1):
         sys.stdout.write("Нейросеть - идём на пары?")
 
-        self.weights_0_1 = np.random.normal(0.0, 2 ** -1,
-                                            (2,
-                                             3))  # Определение 2D вектора весов от 0 к 1 уровню (2 нейрона, 3 веса или 2 строки, 3 столбца)
+        self.weights_0_1 = np.random.normal(0.0, 2 ** -1, (2, 3))  # Определение 2D вектора весов от 0 к 1 уровню
+        # (2 нейрона, 3 веса или 2 строки, 3 столбца)
 
         print("Вектор весов W0 = ", self.weights_0_1)
         input()
 
-        self.weights_1_2 = np.random.normal(0.0, 1,
-                                            (1,
-                                             2))  # Определение 1D вектора весов от 1 к 2 уровню (1 нейрон, 2 веса или 1 строка 2 столбка)
+        self.weights_1_2 = np.random.normal(0.0, 1, (1, 2))  # Определение 1D вектора весов от 1 к 2 уровню
+        # (1 нейрон, 2 веса или 1 строка 2 столбца)
 
         print("Вектор весов W1 = ", self.weights_1_2)
         input()
 
-        self.sigmoid_mapper = np.vectorize(
-            self.sigmoid)  # Применение ко всем значениям 1D вектора нейронов функции сигмоиды
+        self.sigmoid_mapper = np.vectorize(self.sigmoid)  # Применение ко всем значениям 1D вектора нейронов функции сигмоиды
+
         self.learning_rate = np.array([learning_rate])  # Создаём массив из значения LR
 
         """ Эксперименты """
@@ -101,7 +99,8 @@ class GoToTheUnickNetwork(object):
 
         gradient_layer_2 = actual_predict * (1 - actual_predict)  # Поиск градиента - производная сигмоиды
 
-        print("Градиент ошибки: {} * (1 - {}) = {}".format(str(actual_predict),str(actual_predict),str(gradient_layer_2)))
+        print("Градиент ошибки: {} * (1 - {}) = {}".format(str(actual_predict), str(actual_predict),
+                                                           str(gradient_layer_2)))
 
         weights_delta_layer_2 = error_layer_2 * gradient_layer_2  # Поиск дельты веса
         # numpy.dot - Скалярное произведение (если вектора) и произведение матриц (если это матрицы (array))
@@ -136,7 +135,7 @@ train = [
 ]
 
 # learning_rate = 0.05
-epochs = 3000
+epochs = 3000  # Количество эпох. Эпоха это один проход предсказания, обучения и вновь предсказания
 learning_rate = 0.1
 
 network = GoToTheUnickNetwork(learning_rate=learning_rate)
