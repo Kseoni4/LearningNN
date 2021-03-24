@@ -1,22 +1,23 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
 import torch
+import sys as s
 
-N = 350 # Количество точек в каждом классе
-D = 2 # Размерность
-K = 3 # Количество классов
-X = np.zeros((N * K, D)) # Матрица данных, где каждая строчка - один экземпляр
-y = np.zeros(N * K, dtype='uint8') # Матрица "легенды"
+N = 350  # Количество точек в каждом классе
+D = 2  # Размерность
+K = 3  # Количество классов
+X = np.zeros((N * K, D))  # Матрица данных, где каждая строчка - один экземпляр
+y = np.zeros(N * K, dtype='uint8')  # Матрица "легенды"
 
 """ Генерация данных """
 
 for j in range(K):
-  ix = range(N*j,N*(j+1))
-  r = np.linspace(0.0,1,N) # Радиус по котором распределяются точки
-  t = np.linspace(j*4,(j+1)*4,N) + np.random.randn(N)*0.2 # Коэффциент тэта
-  X[ix] = np.c_[r*np.sin(t), r*np.cos(t)]
-  y[ix] = j
+    ix = range(N * j, N * (j + 1))
+    r = np.linspace(0.0, 1, N)  # Радиус по котором распределяются точки
+    t = np.linspace(j * 4, (j + 1) * 4, N) + np.random.randn(N) * 0.2  # Коэффциент тэта
+    X[ix] = np.c_[r * np.sin(t), r * np.cos(t)]
+    y[ix] = j
+
 # Визуализация данных:
 
 plt.figure(figsize=(10, 8))
@@ -29,7 +30,7 @@ plt.ioff()
 plt.show()
 
 from torch import nn
-import  torch.nn.functional as F # Мат.Функции работы с НС
+import torch.nn.functional as F  # Мат.Функции работы с НС
 
 # print(nn.Module.__doc__)
 
@@ -38,20 +39,20 @@ import  torch.nn.functional as F # Мат.Функции работы с НС
 # torch.nn.Sequential - класс для работы с НС. Шаблон для построения простой НС
 
 # N - размер батча (или набора примеров) batch_size
-# D_int - размерность входа (количество входных нейронов)
+# D_in - размерность входа (количество входных нейронов)
 # H - размерность скрытых слоёв (количество скрытых нейронов)
 # D_out - размерность выходного слоя (количество классов)
 
 N, D_in, H, D_out = 64, 2, 500, 3
 
 t_lnetwork = torch.nn.Sequential(
-    torch.nn.Linear(D_in, H), # Линейный слой
-    torch.nn.ReLU(), # Активация
-    torch.nn.Linear(H, D_out), # Линейный слой
-    torch.nn.Softmax() # Активация
+    torch.nn.Linear(D_in, H),  # Линейный скрытый слой
+    torch.nn.ReLU(),  # Активация
+    torch.nn.Linear(H, D_out),  # Линейный выходной слой
+    torch.nn.Softmax()  # Активация
 )
 
-print ("Weight shapes:", [w.shape for w in t_lnetwork.parameters()])
+# print("Weight shapes:", [w.shape for w in t_lnetwork.parameters()])
 
 # Создаём блок входных данных
 x_batch = torch.tensor((X[:3]), dtype=torch.float32)
@@ -59,9 +60,10 @@ y_batch = torch.tensor((y[:3]), dtype=torch.float32)
 
 y_predicted = t_lnetwork(x_batch)[0]
 
-print("y_predicted = ", y_predicted)
+# print("y_predicted = ", y_predicted)
 
 from torch.autograd import Variable
+
 
 # Генерация случайной выборки входных данных
 def batch_gen(X, y, batch_size=128):
@@ -71,19 +73,20 @@ def batch_gen(X, y, batch_size=128):
 
     return Variable(torch.FloatTensor(X_batch)), Variable(torch.LongTensor(y_batch))
 
-print(batch_gen(X, y)[1].shape)
 
-print(t_lnetwork.forward(batch_gen(X,y)[0]))
+# print(batch_gen(X, y)[1].shape)
+
+# print(t_lnetwork.forward(batch_gen(X, y)[0]))
 
 """ Обучение НС """
 
-loss_fn = torch.nn.CrossEntropyLoss(size_average=False) # Кроссэнтропия (сумма -log правилььного класса)
+loss_fn = torch.nn.CrossEntropyLoss(size_average=False)  # Кроссэнтропия (сумма -log правильного класса)
 
-learning_rate = 1e-2
+learning_rate = 0.1
 
 optimizer = torch.optim.SGD(t_lnetwork.parameters(), lr=learning_rate)
 
-epoch = 15000
+epoch = 20000
 
 for t in range(epoch):
     # Выбираем данные из общего пула
@@ -94,7 +97,7 @@ for t in range(epoch):
 
     # Подсчёт ошибки
     loss = loss_fn(y_predicted, y_batch)
-    print('{} {}'.format(t, loss.data))
+    s.stdout.write(f"\r{t} {loss.data}")
 
     # Зануляем градиент
     optimizer.zero_grad()
@@ -104,7 +107,6 @@ for t in range(epoch):
 
     # Считаем веса снова
     optimizer.step()
-
 
 h = 0.02
 

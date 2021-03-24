@@ -1,7 +1,6 @@
 import numpy as np
 import sys
 
-
 class GoToTheUnickNetwork(object):
     """ Вводные данные
 
