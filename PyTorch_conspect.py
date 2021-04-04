@@ -216,6 +216,8 @@ from torchsummary import summary
 features = 784
 classes = 10
 
+nn.init.normal_()
+
 # nn.Sequential - базовый класс на вход которого принимаются слои НС и функции активации друг за другом
 
 model = nn.Sequential(
