@@ -1,7 +1,6 @@
 import numpy as np
 import torch as pt
 import torch.nn as nn
-import torch.nn.functional as tfunc
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 from torch.autograd import Variable
@@ -11,7 +10,7 @@ import sys, os
 class Covid19SicknessInfoNN(nn.Module):
     def __init__(self):
         super(Covid19SicknessInfoNN, self).__init__()
-        self.l0_input = nn.Linear(5, 16)
+        self.l0_input = nn.Linear(7, 16)
         self.l1_hidden = nn.Linear(16, 16)
         self.l2_output = nn.Linear(16, 1)
 
@@ -30,26 +29,32 @@ CovidNet = Covid19SicknessInfoNN()
 optimizer = optim.Adam(CovidNet.parameters(), lr=0.01)
 loss_func = nn.BCEWithLogitsLoss()
 
-train_data = pt.FloatTensor([
-    [0, 0, 38, 1, 1],
-    [1, 0, 39, 1, 1],
-    [1, 1, 38, 1, 0],
-    [0, 0, 37, 1, 1],
-    [1, 0, 38, 1, 1],
-    [1, 1, 38, 1, 1],
-    [1, 0, 36, 0, 0],
-    [0, 1, 38, 1, 1],
-    [0, 0, 36, 0, 0],
-    [1, 1, 36, 0, 0]
-])
+train_data = [
+    [0, 0, 0, 0., 38, 1, 1],
+    [1, 0, 1, 12.5, 38, 1, 1],
+    [1, 1, 0, 0., 38, 1, 0],
+    [1, 1, 0, 0., 38, 1, 1],
+    [0, 0, 1, 1., 38, 1, 0],
+    [1, 0, 1, 1.2, 36, 0, 0],
+    [0, 0, 0, 0., 36, 0, 0],
+    [1, 1, 1, 1., 36, 0, 0]
+]
 
-#train_data = pt.FloatTensor(train_data)
+train_data = pt.FloatTensor(train_data)
 
-target_data = pt.FloatTensor([
-    1, 1, 1, 1, 1, 1, 0, 1, 0, 0
-])
+priority_data = pt.FloatTensor([0.5, 0.9, 1, 0.5, 1, 1, 0.7])
 
-#target_data = pt.FloatTensor(target_data)
+print(train_data)
+
+train_data = priority_data * train_data
+
+print(train_data)
+
+target_data = [
+    1, 1, 1, 1, 0, 0, 0, 0
+]
+
+target_data = pt.FloatTensor(target_data)
 
 input_data = TensorDataset(train_data, target_data)
 trainD = DataLoader(input_data, batch_size=1, shuffle=True)
