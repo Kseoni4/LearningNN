@@ -30,8 +30,8 @@ CovidNet = Covid19SicknessInfoNN()
 optimizer = optim.Adam(CovidNet.parameters(), lr=0.01)
 loss_func = nn.BCEWithLogitsLoss()
 
-train_data = [
-    [0, 0, 38., 1, 1],
+train_data = pt.FloatTensor([
+    [0, 0, 38, 1, 1],
     [1, 0, 39, 1, 1],
     [1, 1, 38, 1, 0],
     [0, 0, 37, 1, 1],
@@ -41,15 +41,15 @@ train_data = [
     [0, 1, 38, 1, 1],
     [0, 0, 36, 0, 0],
     [1, 1, 36, 0, 0]
-]
+])
 
-train_data = pt.FloatTensor(train_data)
+#train_data = pt.FloatTensor(train_data)
 
-target_data = [
-    1, 1, 1, 1, 1, 1, 0 ,1, 0, 0
-]
+target_data = pt.FloatTensor([
+    1, 1, 1, 1, 1, 1, 0, 1, 0, 0
+])
 
-target_data = pt.FloatTensor(target_data)
+#target_data = pt.FloatTensor(target_data)
 
 input_data = TensorDataset(train_data, target_data)
 trainD = DataLoader(input_data, batch_size=1, shuffle=True)
