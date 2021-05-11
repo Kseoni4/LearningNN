@@ -59,7 +59,7 @@ target_data = pt.FloatTensor(target_data)
 input_data = TensorDataset(train_data, target_data)
 trainD = DataLoader(input_data, batch_size=1, shuffle=True)
 
-epochs = 100
+epochs = 1000
 
 for e in range(epochs):
     for (inputs, target) in trainD:

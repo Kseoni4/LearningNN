@@ -23,20 +23,24 @@ class GenreClassificationNN(nn.Module):
 
         x = pt.sigmoid(self.l2_output(x))
 
-        return x
+        return pt.softmax(x, 1)
 
     def trainNN(self, train_data, epochs, lr=0.1):
 
         optimizer = optim.Adam(self.parameters(), lr)
 
-        loss_func = nn.MSELoss()
+        loss_func = nn.CrossEntropyLoss()
 
         loss = loss_func
 
         for e in range(epochs):
             for features, target in train_data:
+
                 features = Variable(features)
+
                 target = Variable(target)
+
+                target = target.view(-1, 1)
 
                 optimizer.zero_grad()
 
